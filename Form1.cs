@@ -38,13 +38,36 @@ namespace StudentsDatabaseApp
 		{
 			if (IsValid())
 			{
-				SqlCommand cmd = new SqlCommand("INSERT INTO StudentsTable VALUES (@name, @FatherName, @Roll, @Address, @Mobile)", con);
+
+				// Create a list to store the selected programming languages
+				List<string> selectedLanguages = new List<string>();
+
+				if (CCheckBox.Checked)
+					selectedLanguages.Add("C/C++");
+				if (CSharpCheckBox.Checked)
+					selectedLanguages.Add("C#");
+				if (VBCheckBox.Checked)
+					selectedLanguages.Add("VB");
+				if (DelphiCheckBox.Checked)
+					selectedLanguages.Add("Delphi");
+
+				// Join the selected languages into a single string
+				string languages = string.Join(", ", selectedLanguages);
+
+				if (languages == string.Empty)
+				{
+					languages += "None";
+				}
+
+
+				SqlCommand cmd = new SqlCommand("INSERT INTO StudentsTable VALUES (@name, @FatherName, @Roll, @Address, @Mobile, @ProgrammingLanguages)", con);
 				cmd.CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@name", txtStudentName.Text);
 				cmd.Parameters.AddWithValue("@FatherName", txtFatherName.Text);
 				cmd.Parameters.AddWithValue("@Roll", txtRollNumber.Text);
 				cmd.Parameters.AddWithValue("@Address", txtAddress.Text);
 				cmd.Parameters.AddWithValue("@Mobile", txtMobile.Text);
+				cmd.Parameters.AddWithValue("@ProgrammingLanguages", languages);
 
 				con.Open();
 				cmd.ExecuteNonQuery();
@@ -150,5 +173,7 @@ namespace StudentsDatabaseApp
 				MessageBox.Show("Please select a student to delete the information!", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
+
+
 	}
 }

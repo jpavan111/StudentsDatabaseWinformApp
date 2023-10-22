@@ -43,6 +43,13 @@
 			txtAddress = new TextBox();
 			txtFatherName = new TextBox();
 			txtMobile = new TextBox();
+			ProgrammingLanguages = new Label();
+			CCheckBox = new CheckBox();
+			CSharpCheckBox = new CheckBox();
+			VBCheckBox = new CheckBox();
+			DelphiCheckBox = new CheckBox();
+			SearchButton = new Button();
+			textBox1 = new TextBox();
 			((System.ComponentModel.ISupportInitialize)StudentRecordDataGridView).BeginInit();
 			SuspendLayout();
 			// 
@@ -191,12 +198,85 @@
 			txtMobile.Size = new Size(197, 25);
 			txtMobile.TabIndex = 1;
 			// 
+			// ProgrammingLanguages
+			// 
+			ProgrammingLanguages.AutoSize = true;
+			ProgrammingLanguages.Location = new Point(314, 114);
+			ProgrammingLanguages.Name = "ProgrammingLanguages";
+			ProgrammingLanguages.Size = new Size(144, 15);
+			ProgrammingLanguages.TabIndex = 5;
+			ProgrammingLanguages.Text = "Programming Languages:";
+			// 
+			// CCheckBox
+			// 
+			CCheckBox.AutoSize = true;
+			CCheckBox.Location = new Point(464, 114);
+			CCheckBox.Name = "CCheckBox";
+			CCheckBox.Size = new Size(63, 19);
+			CCheckBox.TabIndex = 6;
+			CCheckBox.Text = "C/C++";
+			CCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// CSharpCheckBox
+			// 
+			CSharpCheckBox.AutoSize = true;
+			CSharpCheckBox.Location = new Point(464, 137);
+			CSharpCheckBox.Name = "CSharpCheckBox";
+			CSharpCheckBox.Size = new Size(41, 19);
+			CSharpCheckBox.TabIndex = 6;
+			CSharpCheckBox.Text = "C#";
+			CSharpCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// VBCheckBox
+			// 
+			VBCheckBox.AutoSize = true;
+			VBCheckBox.Location = new Point(464, 160);
+			VBCheckBox.Name = "VBCheckBox";
+			VBCheckBox.Size = new Size(40, 19);
+			VBCheckBox.TabIndex = 6;
+			VBCheckBox.Text = "VB";
+			VBCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// DelphiCheckBox
+			// 
+			DelphiCheckBox.AutoSize = true;
+			DelphiCheckBox.Location = new Point(464, 183);
+			DelphiCheckBox.Name = "DelphiCheckBox";
+			DelphiCheckBox.Size = new Size(60, 19);
+			DelphiCheckBox.TabIndex = 6;
+			DelphiCheckBox.Text = "Delphi";
+			DelphiCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// SearchButton
+			// 
+			SearchButton.Location = new Point(18, 160);
+			SearchButton.Name = "SearchButton";
+			SearchButton.Size = new Size(94, 33);
+			SearchButton.TabIndex = 7;
+			SearchButton.Text = "Search";
+			SearchButton.UseVisualStyleBackColor = true;
+			// 
+			// textBox1
+			// 
+			textBox1.Location = new Point(118, 166);
+			textBox1.Name = "textBox1";
+			textBox1.Size = new Size(171, 23);
+			textBox1.TabIndex = 8;
+			textBox1.Text = "Enter Name/Number";
+			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = SystemColors.ActiveCaption;
 			ClientSize = new Size(630, 481);
+			Controls.Add(textBox1);
+			Controls.Add(SearchButton);
+			Controls.Add(DelphiCheckBox);
+			Controls.Add(VBCheckBox);
+			Controls.Add(CSharpCheckBox);
+			Controls.Add(CCheckBox);
+			Controls.Add(ProgrammingLanguages);
 			Controls.Add(label3);
 			Controls.Add(label4);
 			Controls.Add(label5);
@@ -241,5 +321,12 @@
 		private TextBox txtAddress;
 		private TextBox txtFatherName;
 		private TextBox txtMobile;
+		private Label ProgrammingLanguages;
+		private CheckBox CCheckBox;
+		private CheckBox CSharpCheckBox;
+		private CheckBox VBCheckBox;
+		private CheckBox DelphiCheckBox;
+		private Button SearchButton;
+		private TextBox textBox1;
 	}
 }
