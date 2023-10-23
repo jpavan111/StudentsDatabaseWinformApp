@@ -1,5 +1,7 @@
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace StudentsDatabaseApp
 {
@@ -10,6 +12,40 @@ namespace StudentsDatabaseApp
 		public Form1()
 		{
 			InitializeComponent();
+
+			// Handle CheckedChanged events for both checkboxes
+			MaleCheckBox.CheckedChanged += MaleCheckBox_CheckedChanged;
+			FemaleCheckBox.CheckedChanged += FemaleCheckBox_CheckedChanged;
+
+			// Handle Enter and Leave events for the TextBox
+			SearchTextBox.Enter += SearchTextBox_Enter;
+			SearchTextBox.Leave += SearchTextBox_Leave;
+
+			// Set the initial hint
+			SearchTextBox.Text = "Enter Name/Phone number";
+			SearchTextBox.ForeColor = System.Drawing.Color.LightGray;
+		}
+
+		private void SearchTextBox_Enter(object sender, EventArgs e)
+		{
+			TextBox textBox = (TextBox)sender;
+
+			if (textBox.Text == "Enter Name/Phone number")
+			{
+				textBox.Text = "";
+				textBox.ForeColor = System.Drawing.Color.Black; // Set the text color to the desired color
+			}
+		}
+
+		private void SearchTextBox_Leave(object sender, EventArgs e)
+		{
+			TextBox textBox = (TextBox)sender;
+
+			if (string.IsNullOrWhiteSpace(textBox.Text))
+			{
+				textBox.Text = "Enter Name/Phone number";
+				textBox.ForeColor = System.Drawing.Color.LightGray;
+			}
 		}
 
 
@@ -34,7 +70,7 @@ namespace StudentsDatabaseApp
 
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void InsertButton_Click(object sender, EventArgs e)
 		{
 			if (IsValid())
 			{
@@ -59,15 +95,21 @@ namespace StudentsDatabaseApp
 					languages += "None";
 				}
 
+				String Gender = "";
 
-				SqlCommand cmd = new SqlCommand("INSERT INTO StudentsTable VALUES (@name, @FatherName, @Roll, @Address, @Mobile, @ProgrammingLanguages)", con);
+				if (MaleCheckBox.Checked)
+					Gender = "Male";
+				if (FemaleCheckBox.Checked)
+					Gender = "Female";
+
+
+				SqlCommand cmd = new SqlCommand("INSERT INTO StudentsTable VALUES (@name, @Mobile, @ProgrammingLanguages, @Hobbies, @Gender)", con);
 				cmd.CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@name", txtStudentName.Text);
-				cmd.Parameters.AddWithValue("@FatherName", txtFatherName.Text);
-				cmd.Parameters.AddWithValue("@Roll", txtRollNumber.Text);
-				cmd.Parameters.AddWithValue("@Address", txtAddress.Text);
 				cmd.Parameters.AddWithValue("@Mobile", txtMobile.Text);
 				cmd.Parameters.AddWithValue("@ProgrammingLanguages", languages);
+				cmd.Parameters.AddWithValue("@Hobbies", txtHobbies.Text);
+				cmd.Parameters.AddWithValue("@Gender", Gender);
 
 				con.Open();
 				cmd.ExecuteNonQuery();
@@ -94,7 +136,7 @@ namespace StudentsDatabaseApp
 
 		}
 
-		private void button4_Click(object sender, EventArgs e)
+		private void ResetButton_Click(object sender, EventArgs e)
 		{
 			ResetFormControls();
 		}
@@ -103,10 +145,14 @@ namespace StudentsDatabaseApp
 		{
 			StudentID = 0;
 			txtStudentName.Clear();
-			txtFatherName.Clear();
-			txtAddress.Clear();
 			txtMobile.Clear();
-			txtRollNumber.Clear();
+			txtHobbies.Clear();
+			MaleCheckBox.Enabled = false;
+			MaleCheckBox.Enabled = false;
+			CCheckBox.Enabled = false;
+			CSharpCheckBox.Enabled = false;
+			VBCheckBox.Enabled = false;
+			DelphiCheckBox.Enabled = false;
 
 			txtStudentName.Focus();
 		}
@@ -115,25 +161,70 @@ namespace StudentsDatabaseApp
 		{
 			StudentID = Convert.ToInt32(StudentRecordDataGridView.SelectedRows[0].Cells[0].Value);
 			txtStudentName.Text = StudentRecordDataGridView.SelectedRows[0].Cells[1].Value.ToString();
-			txtFatherName.Text = StudentRecordDataGridView.SelectedRows[0].Cells[2].Value.ToString();
-			txtRollNumber.Text = StudentRecordDataGridView.SelectedRows[0].Cells[3].Value.ToString();
-			txtAddress.Text = StudentRecordDataGridView.SelectedRows[0].Cells[4].Value.ToString();
-			txtMobile.Text = StudentRecordDataGridView.SelectedRows[0].Cells[5].Value.ToString();
+			txtMobile.Text = StudentRecordDataGridView.SelectedRows[0].Cells[2].Value.ToString();
+			string languages = StudentRecordDataGridView.SelectedRows[0].Cells[3].Value.ToString();
+
+			if (languages.Contains("C/C++"))
+				CCheckBox.Checked = true;
+			if (languages.Contains("C#"))
+				CSharpCheckBox.Checked = true;
+			if (languages.Contains("VB"))
+				VBCheckBox.Checked = true;
+			if (languages.Contains("Delphi"))
+				DelphiCheckBox.Checked = true;
+
+
+
+			txtHobbies.Text = StudentRecordDataGridView.SelectedRows[0].Cells[4].Value.ToString();
+
+			string Gender = StudentRecordDataGridView.SelectedRows[0].Cells[5].Value.ToString();
+
+			if (Gender.Contains("Male"))
+				MaleCheckBox.Checked = true;
+			if (Gender.Contains("Female"))
+				FemaleCheckBox.Checked = true;
 
 		}
 
-		private void button2_Click(object sender, EventArgs e)
+		private void UpdateButton_Click(object sender, EventArgs e)
 		{
 			if (StudentID > 0)
 			{
-				SqlCommand cmd = new SqlCommand("UPDATE StudentsTable SET Name = @name, FatherName = @FatherName, RollNumber = @Roll, Address = @Address, Mobile = @Mobile WHERE StudentId = @ID", con);
+				// Create a list to store the selected programming languages
+				List<string> selectedLanguages = new List<string>();
+
+				if (CCheckBox.Checked)
+					selectedLanguages.Add("C/C++");
+				if (CSharpCheckBox.Checked)
+					selectedLanguages.Add("C#");
+				if (VBCheckBox.Checked)
+					selectedLanguages.Add("VB");
+				if (DelphiCheckBox.Checked)
+					selectedLanguages.Add("Delphi");
+
+				// Join the selected languages into a single string
+				string languages = string.Join(", ", selectedLanguages);
+
+				if (languages == string.Empty)
+				{
+					languages += "None";
+				}
+
+				String Gender = "";
+
+				if (MaleCheckBox.Checked)
+					Gender = "Male";
+				if (FemaleCheckBox.Checked)
+					Gender = "Female";
+
+				SqlCommand cmd = new SqlCommand("UPDATE StudentsTable SET Name = @name, Mobile = @Mobile, ProgrammingLanguages = @languages, Hobbies = @Hobbies, Gender = @gender WHERE StudentId = @ID", con);
 				cmd.CommandType = CommandType.Text;
-				cmd.Parameters.AddWithValue("@name", txtStudentName.Text);
-				cmd.Parameters.AddWithValue("@FatherName", txtFatherName.Text);
-				cmd.Parameters.AddWithValue("@Roll", txtRollNumber.Text);
-				cmd.Parameters.AddWithValue("@Address", txtAddress.Text);
-				cmd.Parameters.AddWithValue("@Mobile", txtMobile.Text);
 				cmd.Parameters.AddWithValue("@ID", this.StudentID);
+				cmd.Parameters.AddWithValue("@name", txtStudentName.Text);
+				cmd.Parameters.AddWithValue("@Mobile", txtMobile.Text);
+				cmd.Parameters.AddWithValue("@languages", languages);
+				cmd.Parameters.AddWithValue("@Hobbies", txtHobbies.Text);
+				cmd.Parameters.AddWithValue("@Gender", Gender);
 
 				con.Open();
 				cmd.ExecuteNonQuery();
@@ -151,7 +242,7 @@ namespace StudentsDatabaseApp
 			}
 		}
 
-		private void button3_Click(object sender, EventArgs e)
+		private void DeleteButton_Click(object sender, EventArgs e)
 		{
 			if (StudentID > 0)
 			{
@@ -174,6 +265,93 @@ namespace StudentsDatabaseApp
 			}
 		}
 
+		private void SearchTextBox_TextChanged(object sender, EventArgs e)
+		{
 
+		}
+
+		private void SearchButton_Click(object sender, EventArgs e)
+		{
+			string keyword = SearchTextBox.Text;
+
+			string searchQuery = "SELECT Name, Mobile, ProgrammingLanguages, Hobbies, Gender FROM StudentsTable " +
+								 "WHERE Name LIKE @Keyword OR Mobile LIKE @Keyword;";
+
+			using (SqlCommand searchCommand = new SqlCommand(searchQuery, con))
+			{
+				searchCommand.Parameters.AddWithValue("@Keyword", "%" + keyword + "%");
+
+				using (SqlDataAdapter adapter = new SqlDataAdapter(searchCommand))
+				{
+					DataTable dataTable = new DataTable();
+					adapter.Fill(dataTable);
+
+					if (dataTable.Rows.Count > 0)
+					{
+						// Display the search results in DataGridView
+						//StudentRecordDataGridView.DataSource = dataTable;
+
+						// You can also extract the data from the first row (assuming only one result)
+						DataRow firstRow = dataTable.Rows[0];
+						string name = firstRow["Name"].ToString();
+						string mobileNumber = firstRow["Mobile"].ToString();
+						string languages = firstRow["ProgrammingLanguages"].ToString();
+						string hobbies = firstRow["Hobbies"].ToString();
+						string gender = firstRow["Gender"].ToString();
+
+						// You can then display this information in your form as needed
+						ResetFormControls();
+						txtStudentName.Text = name;
+						txtMobile.Text = mobileNumber;
+
+						if (languages.Contains("C/C++"))
+							CCheckBox.Checked = true;
+						if (languages.Contains("C#"))
+							CSharpCheckBox.Checked = true;
+						if (languages.Contains("VB"))
+							VBCheckBox.Checked = true;
+						if (languages.Contains("Delphi"))
+							DelphiCheckBox.Checked = true;
+
+						txtHobbies.Text = hobbies;
+
+						if (gender.Contains("Male"))
+							MaleCheckBox.Checked = true;
+						if (gender.Contains("Female"))
+							FemaleCheckBox.Checked = true;
+
+					}
+					else
+					{
+						MessageBox.Show("No matching records found.");
+					}
+				}
+			}
+		}
+
+		private void MaleCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (MaleCheckBox.Checked)
+			{
+				FemaleCheckBox.Enabled = false;
+			}
+			else
+			{
+				FemaleCheckBox.Enabled = true;
+			}
+
+		}
+
+		private void FemaleCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			if (FemaleCheckBox.Checked)
+			{
+				MaleCheckBox.Enabled = false;
+			}
+			else
+			{
+				MaleCheckBox.Enabled = true;
+			}
+		}
 	}
 }
