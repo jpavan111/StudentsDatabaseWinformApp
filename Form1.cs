@@ -18,12 +18,12 @@ namespace StudentsDatabaseApp
 			FemaleCheckBox.CheckedChanged += FemaleCheckBox_CheckedChanged;
 
 			// Handle Enter and Leave events for the TextBox
-			SearchTextBox.Enter += SearchTextBox_Enter;
-			SearchTextBox.Leave += SearchTextBox_Leave;
+			txtSearch.Enter += SearchTextBox_Enter;
+			txtSearch.Leave += SearchTextBox_Leave;
 
 			// Set the initial hint
-			SearchTextBox.Text = "Enter Name/Phone number";
-			SearchTextBox.ForeColor = System.Drawing.Color.LightGray;
+			txtSearch.Text = "Enter Name/Phone number";
+			txtSearch.ForeColor = System.Drawing.Color.LightGray;
 		}
 
 		private void SearchTextBox_Enter(object sender, EventArgs e)
@@ -51,6 +51,7 @@ namespace StudentsDatabaseApp
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			txtStudentName.Focus();
 			GetStudentsRecord();
 		}
 
@@ -67,6 +68,7 @@ namespace StudentsDatabaseApp
 			con.Close();
 
 			StudentRecordDataGridView.DataSource = dt;
+			StudentRecordDataGridView.ClearSelection();
 
 		}
 
@@ -147,12 +149,15 @@ namespace StudentsDatabaseApp
 			txtStudentName.Clear();
 			txtMobile.Clear();
 			txtHobbies.Clear();
-			MaleCheckBox.Enabled = false;
-			MaleCheckBox.Enabled = false;
-			CCheckBox.Enabled = false;
-			CSharpCheckBox.Enabled = false;
-			VBCheckBox.Enabled = false;
-			DelphiCheckBox.Enabled = false;
+			txtSearch.Clear();
+			
+
+			MaleCheckBox.Checked = false;
+			FemaleCheckBox.Checked = false;
+			CCheckBox.Checked = false;
+			CSharpCheckBox.Checked = false;
+			VBCheckBox.Checked = false;
+			DelphiCheckBox.Checked = false;
 
 			txtStudentName.Focus();
 		}
@@ -183,6 +188,14 @@ namespace StudentsDatabaseApp
 				MaleCheckBox.Checked = true;
 			if (Gender.Contains("Female"))
 				FemaleCheckBox.Checked = true;
+
+			// Enable the checkboxes
+			CCheckBox.Enabled = true;
+			CSharpCheckBox.Enabled = true;
+			VBCheckBox.Enabled = true;
+			DelphiCheckBox.Enabled = true;
+			MaleCheckBox.Enabled = true;
+			FemaleCheckBox.Enabled = true;
 
 		}
 
@@ -272,9 +285,10 @@ namespace StudentsDatabaseApp
 
 		private void SearchButton_Click(object sender, EventArgs e)
 		{
-			string keyword = SearchTextBox.Text;
+			StudentRecordDataGridView.ClearSelection();
+			string keyword = txtSearch.Text;
 
-			string searchQuery = "SELECT Name, Mobile, ProgrammingLanguages, Hobbies, Gender FROM StudentsTable " +
+			string searchQuery = "SELECT StudentID, Name, Mobile, ProgrammingLanguages, Hobbies, Gender FROM StudentsTable " +
 								 "WHERE Name LIKE @Keyword OR Mobile LIKE @Keyword;";
 
 			using (SqlCommand searchCommand = new SqlCommand(searchQuery, con))
@@ -293,11 +307,25 @@ namespace StudentsDatabaseApp
 
 						// You can also extract the data from the first row (assuming only one result)
 						DataRow firstRow = dataTable.Rows[0];
+
+						StudentID = Convert.ToInt32(firstRow["StudentID"]);
 						string name = firstRow["Name"].ToString();
 						string mobileNumber = firstRow["Mobile"].ToString();
 						string languages = firstRow["ProgrammingLanguages"].ToString();
 						string hobbies = firstRow["Hobbies"].ToString();
 						string gender = firstRow["Gender"].ToString();
+
+
+						// Find and select the corresponding row in the DataGridView
+						foreach (DataGridViewRow row in StudentRecordDataGridView.Rows)
+						{
+							if (row.Cells["StudentID"].Value != null &&
+								row.Cells["StudentID"].Value.ToString() == StudentID.ToString())
+							{
+								row.Selected = true;
+								break;
+							}
+						}
 
 						// You can then display this information in your form as needed
 						ResetFormControls();
@@ -319,6 +347,14 @@ namespace StudentsDatabaseApp
 							MaleCheckBox.Checked = true;
 						if (gender.Contains("Female"))
 							FemaleCheckBox.Checked = true;
+
+						// Enable the checkboxes
+						CCheckBox.Enabled = true;
+						CSharpCheckBox.Enabled = true;
+						VBCheckBox.Enabled = true;
+						DelphiCheckBox.Enabled = true;
+						MaleCheckBox.Enabled = true;
+						FemaleCheckBox.Enabled = true;
 
 					}
 					else
@@ -352,6 +388,28 @@ namespace StudentsDatabaseApp
 			{
 				MaleCheckBox.Enabled = true;
 			}
+		}
+
+		private void txtMobile_TextChanged(object sender, EventArgs e)
+		{
+			string input = txtMobile.Text;
+			if (!string.IsNullOrWhiteSpace(input) && !IsNumeric(input))
+			{
+				MessageBox.Show("Please enter numbers only in the Mobile field.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				txtMobile.Text = ""; // Clear the invalid input
+			}
+		}
+
+		private bool IsNumeric(string input)
+		{
+			foreach (char c in input)
+			{
+				if (!char.IsDigit(c))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }

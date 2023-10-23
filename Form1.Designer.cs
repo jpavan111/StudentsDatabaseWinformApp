@@ -43,7 +43,7 @@
 			VBCheckBox = new CheckBox();
 			DelphiCheckBox = new CheckBox();
 			SearchButton = new Button();
-			SearchTextBox = new TextBox();
+			txtSearch = new TextBox();
 			label1 = new Label();
 			MaleCheckBox = new CheckBox();
 			FemaleCheckBox = new CheckBox();
@@ -142,6 +142,7 @@
 			txtMobile.Name = "txtMobile";
 			txtMobile.Size = new Size(171, 25);
 			txtMobile.TabIndex = 1;
+			txtMobile.TextChanged += txtMobile_TextChanged;
 			// 
 			// ProgrammingLanguages
 			// 
@@ -204,12 +205,12 @@
 			// 
 			// SearchTextBox
 			// 
-			SearchTextBox.Location = new Point(118, 166);
-			SearchTextBox.Name = "SearchTextBox";
-			SearchTextBox.Size = new Size(171, 23);
-			SearchTextBox.TabIndex = 8;
-			SearchTextBox.Text = "Enter Name/Number";
-			SearchTextBox.TextChanged += SearchTextBox_TextChanged;
+			txtSearch.Location = new Point(118, 166);
+			txtSearch.Name = "SearchTextBox";
+			txtSearch.Size = new Size(171, 23);
+			txtSearch.TabIndex = 8;
+			txtSearch.Text = "Enter Name/Number";
+			txtSearch.TextChanged += SearchTextBox_TextChanged;
 			// 
 			// label1
 			// 
@@ -267,7 +268,7 @@
 			BackColor = SystemColors.ActiveCaption;
 			ClientSize = new Size(630, 481);
 			Controls.Add(label1);
-			Controls.Add(SearchTextBox);
+			Controls.Add(txtSearch);
 			Controls.Add(SearchButton);
 			Controls.Add(DelphiCheckBox);
 			Controls.Add(VBCheckBox);
@@ -316,7 +317,7 @@
 		private CheckBox VBCheckBox;
 		private CheckBox DelphiCheckBox;
 		private Button SearchButton;
-		private TextBox SearchTextBox;
+		private TextBox txtSearch;
 		private Label label1;
 		private CheckBox MaleCheckBox;
 		private CheckBox FemaleCheckBox;
