@@ -134,6 +134,12 @@ namespace StudentsDatabaseApp
 				return false;
 			}
 
+			if (txtMobile.Text.Length < 10)
+			{
+				MessageBox.Show("Please Enter a Valid mobile number!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+
 			return true;
 
 		}
@@ -251,7 +257,7 @@ namespace StudentsDatabaseApp
 			}
 			else
 			{
-				MessageBox.Show("Please select a student to update the information!", "Updated", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Please select (click on grid entry) a student to update the information!", "Updated", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
